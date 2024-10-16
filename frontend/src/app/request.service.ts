@@ -17,4 +17,12 @@ export class RequestService {
   createRequest(request: any): Observable<any> {
     return this.http.post(this.apiUrl, request);
   }
+
+  updateRequest(id: number, request: any): Observable<any> {
+   return this.http.put(`${this.apiUrl}/${id}`, request);
+  }
+
+  deleteRequest(id: number): Observable<any> {
+   return this.http.delete(`${this.apiUrl}/${id}`);
+  }
 }
