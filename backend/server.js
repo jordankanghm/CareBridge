@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors'); // Import cors for API calls
 const sequelize = require('./config'); // Import the Sequelize instance from your config file
 
 // Create an Express app
@@ -7,9 +8,12 @@ const app = express();
 // Middleware to parse incoming requests with JSON payloads
 app.use(express.json());
 
-// Import your routes
-const authRoutes = require('./routes/auth'); // Import your authentication routes
-app.use('/api/auth', authRoutes); // API route for authentication
+// Use CORS middleware
+app.use(cors());
+
+// Import routes
+const authRoutes = require('./routes/auth');
+app.use('/api/auth', authRoutes);
 
 const reqRoutes = require('./routes/requests');
 app.use('/api/requests', reqRoutes);

@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -8,21 +6,37 @@ import { Observable } from 'rxjs';
 export class RequestService {
   private apiUrl = 'http://localhost:3000/api/requests';
 
-  constructor(private http: HttpClient) {}
-
-  getRequests(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
+  // Fetch GET requests
+  getRequests(): Promise<any[]> {
+    return fetch(this.apiUrl).then(response => response.json());
   }
 
-  createRequest(request: any): Observable<any> {
-    return this.http.post(this.apiUrl, request);
+  // Fetch POST request
+  createRequest(request: any): Promise<any> {
+    return fetch(this.apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(request),
+    }).then(response => response.json());
   }
 
-  updateRequest(id: number, request: any): Observable<any> {
-   return this.http.put(`${this.apiUrl}/${id}`, request);
+  // Fetch PUT request
+  updateRequest(id: number, request: any): Promise<any> {
+    return fetch(`${this.apiUrl}/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(request),
+    }).then(response => response.json());
   }
 
-  deleteRequest(id: number): Observable<any> {
-   return this.http.delete(`${this.apiUrl}/${id}`);
+  // Fetch DELETE request
+  deleteRequest(id: number): Promise<any> {
+    return fetch(`${this.apiUrl}/${id}`, {
+      method: 'DELETE',
+    }).then(response => response.json());
   }
 }

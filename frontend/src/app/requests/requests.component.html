@@ -1,26 +1,20 @@
 <div>
   <h2>Requests</h2>
-
-  <!-- Input Field for Request Description -->
-  <input
-    [(ngModel)]="description"
-    placeholder="Request description"
-    required
-  />
-
-  <!-- Button to Create or Update Request -->
-  <button (click)="editingRequest ? updateRequest() : createRequest()">
-    {{ editingRequest ? 'Update Request' : 'Create Request' }}
-  </button>
-
-  <hr />
-
+  <!-- Conditionally display the input and button based on userRole -->
+  <div *ngIf="userRole === 'elderly'">
+    <!-- Input Field for Request Description -->
+    <input [(ngModel)]="description" placeholder="Request description" required />
+    <!-- Button to Create or Update Request -->
+    <button (click)="editingRequest ? updateRequest() : createRequest()">
+      {{ editingRequest ? 'Update Request' : 'Create Request' }}
+    </button>
+    <hr />
+  </div>
   <!-- List of Requests -->
   <h3>Current Requests:</h3>
   <ul>
     <li *ngFor="let request of requests">
       <span>{{ request.description }} (Status: {{ request.status }})</span>
-
       <!-- Edit and Delete Buttons -->
       <button (click)="editRequest(request)">Edit</button>
       <button (click)="deleteRequest(request.id)">Delete</button>
