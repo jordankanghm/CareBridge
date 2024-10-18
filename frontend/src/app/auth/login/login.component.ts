@@ -22,7 +22,7 @@ export class LoginComponent {
     this.authService.login({ username: this.username, password: this.password }).then(
       (response) => {
         if (response.token) {
-          this.router.navigate(['/']);
+          this.router.navigate(['/requests']);
         } else {
           this.loginError = true;
         }
@@ -30,7 +30,7 @@ export class LoginComponent {
     ).catch(
       (error) => {
         this.loginError = true;
-        console.error('Login error:', error); // Debugging step
+        console.error('Login error:', error);
       }
     );
   }

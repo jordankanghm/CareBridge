@@ -6,10 +6,17 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class AuthService {
   private apiUrl = 'http://localhost:3000/api/auth';
-  private loggedIn = new BehaviorSubject<boolean>(!!this.getLocalStorageItem('token')); // Update initialization
+  private loggedIn = new BehaviorSubject<boolean>(this.checkToken()); // Check token on initialization
   public isLoggedIn$ = this.loggedIn.asObservable();
+  private userRoleSubject = new BehaviorSubject<string | null>(this.getLocalStorageItem('role'));
+  public userRole$ = this.userRoleSubject.asObservable();
 
   // Helper functions
+  private checkToken(): boolean {
+    // Check if the token exists in localStorage
+    return !!this.getLocalStorageItem('token');
+  }
+
   private getLocalStorageItem(key: string): string | null {
     return typeof window !== 'undefined' ? localStorage.getItem(key) : null;
   }
@@ -45,20 +52,26 @@ export class AuthService {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(userData),
-    }).then(response => response.json()).then(data => {
-      if (data.token) {
-        this.setLocalStorageItem('token', data.token); // Store token in localStorage
-        this.setLocalStorageItem('role', data.role); // Store role in localStorage
-        this.loggedIn.next(true); // Update login state
-      }
-      return data;
-    });
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.token) {
+          this.setLocalStorageItem('token', data.token);
+          this.setLocalStorageItem('role', data.role);
+          this.setLocalStorageItem('userId', data.userId);
+          this.loggedIn.next(true);
+          this.userRoleSubject.next(data.role);
+        }
+        return data;
+      });
   }
 
   // Log out method
   logout(): void {
     this.removeLocalStorageItem('token');
-    this.removeLocalStorageItem('role'); // Remove role from localStorage
-    this.loggedIn.next(false); // Update login state
+    this.removeLocalStorageItem('role');
+    this.removeLocalStorageItem('userId');
+    this.loggedIn.next(false);
+    this.userRoleSubject.next(null);
   }
 }

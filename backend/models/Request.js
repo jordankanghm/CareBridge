@@ -11,8 +11,36 @@ const Request = sequelize.define('Request', {
     type: DataTypes.STRING,
     defaultValue: 'open',
   },
+  elderlyId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: User,
+      key: 'id',
+    },
+  },
+  volunteerId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: {
+      model: User,
+      key: 'id',
+    },
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW,
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW,
+  },
 });
 
-Request.belongsTo(User, { as: 'elderly' });
+// Define the associations
+Request.belongsTo(User, { as: 'elderly', foreignKey: 'elderlyId' });
+Request.belongsTo(User, { as: 'volunteer', foreignKey: 'volunteerId' });
 
 module.exports = Request;
